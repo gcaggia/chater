@@ -5,11 +5,15 @@ import {
 } from 'react-query';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
-import reactLogo from './assets/react.svg';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Healthcheck from './components/Healthcheck';
 import { trpc } from './utils/trpc';
-import './App.css';
 import ListChannels from './components/ListChannels';
+import MainLayout from './components/layout/main';
+import Home from './pages/Home';
+import Channel from './pages/Channel';
+import NotFound from './pages/NotFound';
+import './App.css';
 
 const reactQueryClient = new ReactQueryClient();
 
@@ -36,7 +40,16 @@ function App() {
     <ReactQueryClientProvider client={reactQueryClient}>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          <div className="App">
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<Home />} />
+                <Route path="channel/:channelName" element={<Channel />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+          {/* <div className="App">
             <div>
               <a href="https://vitejs.dev" target="_blank">
                 <img src="/vite.svg" className="logo" alt="Vite logo" />
@@ -54,7 +67,7 @@ function App() {
               <ListChannels />
             </div>
             <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-          </div>
+          </div> */}
         </QueryClientProvider>
       </trpc.Provider>
     </ReactQueryClientProvider>
